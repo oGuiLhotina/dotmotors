@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="dotmotors" id="Project-c81" database="PostgreSQL" >
+	<schema name="dotmotors" >
+		<table name="contracts" prior="tbl" >
+			<column name="id" type="serial" jt="4" mandatory="y" />
+			<column name="vehicle_id" type="integer" jt="4" mandatory="y" />
+			<column name="contract_value" type="double precision" jt="3" mandatory="y" />
+			<column name="json_data" type="json" jt="2000" mandatory="y" >
+				<comment><![CDATA[valor, parcelas, qtd de parcelas, entrada, juros
+na venda a entrada é de 60%
+parcela + juros]]></comment>
+			</column>
+			<column name="seller_id" type="integer" jt="4" mandatory="y" />
+			<column name="customer_id" type="integer" jt="4" mandatory="y" />
+			<column name="created" type="timestamp" jt="93" mandatory="y" >
+				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
+			</column>
+			<column name="updated" type="timestamp" jt="93" />
+			<column name="deleted" type="timestamp" jt="93" >
+				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+			</column>
+			<column name="signal" type="integer" jt="4" mandatory="y" >
+				<defo><![CDATA[60]]></defo>
+				<comment><![CDATA[percentual pago na entrada, normalmente 60% do bem.]]></comment>
+			</column>
+			<column name="portion" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[qtd de parcelas do contrato]]></comment>
+			</column>
+			<column name="type" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[etapas do funil de vendas
+1 - prospecção
+2 - aceite verbal
+3 - contrato assinado]]></comment>
+			</column>
+			<index name="pk_contracts" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<constraint name="contract_types" >
+				<string><![CDATA[1,2,3]]></string>
+				<comment><![CDATA[1 - prospecção 
+2 - aceite verbal
+3 - contrato assinado]]></comment>
+			</constraint>
+			<fk name="fk_contracts_vehicles" to_schema="dotmotors" to_table="vehicles" >
+				<fk_column name="vehicle_id" pk="id" />
+			</fk>
+			<fk name="fk_contracts_entities_seller" to_schema="dotmotors" to_table="entities" >
+				<fk_column name="seller_id" pk="id" />
+			</fk>
+			<fk name="fk_contracts_entities_customer" to_schema="dotmotors" to_table="entities" >
+				<fk_column name="customer_id" pk="id" />
+			</fk>
+		</table>
+		<table name="entities" prior="customers" spec="" >
+			<column name="id" type="serial" jt="4" mandatory="y" >
+				<comment><![CDATA[identificação única do cliente]]></comment>
+			</column>
+			<column name="name" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="entity_type_id" type="integer" jt="4" mandatory="y" />
+			<column name="json_data" type="json" jt="2000" mandatory="y" >
+				<comment><![CDATA[campo para guardar dados dos campos da tabelas entities]]></comment>
+			</column>
+			<column name="created" type="timestamp" jt="93" mandatory="y" >
+				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
+			</column>
+			<column name="updated" type="timestamp" jt="93" />
+			<column name="deleted" type="timestamp" jt="93" >
+				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+			</column>
+			<index name="pk_customers" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_entities_entity_types" to_schema="dotmotors" to_table="entity_types" >
+				<fk_column name="entity_type_id" pk="id" />
+			</fk>
+		</table>
+		<table name="entity_types" prior="tbl" >
+			<column name="id" type="serial" jt="4" mandatory="y" />
+			<column name="name" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="created" type="timestamp" jt="93" mandatory="y" >
+				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
+			</column>
+			<column name="updated" type="timestamp" jt="93" />
+			<column name="deleted" type="timestamp" jt="93" mandatory="y" >
+				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+			</column>
+			<index name="pk_entity_types" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<table name="entries" prior="tbl" >
+			<column name="id" type="serial" jt="4" mandatory="y" />
+			<index name="pk_entries" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<table name="item_lots" prior="tbl_0" >
+			<column name="id" type="serial" jt="4" mandatory="y" />
+			<column name="vehicle_id" type="integer" jt="4" mandatory="y" />
+			<column name="lot_id" type="integer" jt="4" mandatory="y" />
+			<column name="item_value" type="double precision" jt="3" mandatory="y" />
+			<column name="created" type="timestamp" jt="93" mandatory="y" >
+				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
+			</column>
+			<column name="updated" type="timestamp" jt="93" />
+			<column name="deleted" type="timestamp" jt="93" >
+				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+			</column>
+			<index name="pk_item_lots" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_item_lots_vehicles" to_schema="dotmotors" to_table="vehicles" >
+				<fk_column name="vehicle_id" pk="id" />
+			</fk>
+			<fk name="fk_item_lots_lots" to_schema="dotmotors" to_table="lots" >
+				<fk_column name="lot_id" pk="id" />
+			</fk>
+		</table>
+		<table name="lots" prior="lote" >
+			<column name="id" type="serial" jt="4" mandatory="y" />
+			<column name="description" type="varchar" length="255" jt="12" />
+			<column name="agency_id" type="integer" jt="4" mandatory="y" />
+			<column name="created" type="timestamp" jt="93" >
+				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
+			</column>
+			<column name="updated" type="timestamp" jt="93" />
+			<column name="deleted" type="timestamp" jt="93" >
+				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+			</column>
+			<index name="pk_lots" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_lots_entities" to_schema="dotmotors" to_table="entities" >
+				<fk_column name="agency_id" pk="id" />
+			</fk>
+		</table>
+		<table name="owners" prior="propietary" >
+			<column name="id" type="serial" jt="4" mandatory="y" />
+			<column name="cpf" type="varchar" length="20" jt="12" mandatory="y" />
+			<column name="cpnj" type="varchar" length="20" jt="12" mandatory="y" />
+			<column name="created" type="timestamp" length="100" jt="93" mandatory="y" >
+				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
+			</column>
+			<column name="updated" type="timestamp" length="50" jt="93" />
+			<column name="deleted" type="timestamp" jt="93" >
+				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+			</column>
+			<index name="pk_owners" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<table name="promissory" prior="tbl_0" >
+			<comment><![CDATA[tabela de promissórias]]></comment>
+			<column name="contract_id" type="integer" jt="4" mandatory="y" />
+			<column name="number" prior="id" type="integer" jt="4" mandatory="y" />
+			<column name="due_date" type="integer" length="100" jt="4" mandatory="y" >
+				<column_options><![CDATA[GENERATED BY DEFAULT AS created + 30 ]]></column_options>
+			</column>
+			<column name="fee" type="double precision" jt="3" mandatory="y" />
+			<column name="late_payment_fee" prior="diary_fee" type="double precision" jt="3" mandatory="y" />
+			<column name="due_portion_value" prior="p" type="double precision" jt="3" mandatory="y" />
+			<column name="pro_rata" type="double precision" jt="3" mandatory="y" >
+				<comment><![CDATA[valor cobrado por dia de atraso]]></comment>
+			</column>
+			<column name="created" type="timestamp" length="100" jt="93" >
+				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
+			</column>
+			<column name="updated" type="timestamp" jt="93" />
+			<column name="deleted" type="timestamp" jt="93" >
+				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+			</column>
+			<index name="pk_promissory" unique="PRIMARY_KEY" >
+				<column name="number" />
+			</index>
+			<index name="unq_promissory_contract_id" unique="UNIQUE_KEY" >
+				<column name="contract_id" />
+				<column name="number" />
+			</index>
+			<fk name="fk_promissory_contracts" to_schema="dotmotors" to_table="contracts" >
+				<fk_column name="contract_id" pk="id" />
+			</fk>
+		</table>
+		<table name="service_lots" prior="tbl_0" >
+			<column name="id" type="serial" jt="4" mandatory="y" />
+			<column name="lot_id" type="integer" jt="4" mandatory="y" />
+			<column name="nf" type="varchar" length="255" jt="12" mandatory="y" />
+			<column name="value" type="double precision" jt="3" mandatory="y" />
+			<column name="description" type="varchar" length="255" jt="12" mandatory="y" >
+				<comment><![CDATA[descrição da despesa referente ao lote]]></comment>
+			</column>
+			<column name="created" type="timestamp" length="100" jt="93" >
+				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
+			</column>
+			<column name="updated" type="timestamp" jt="93" />
+			<column name="deleted" type="timestamp" jt="93" mandatory="y" >
+				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+			</column>
+			<index name="pk_service_lots" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_service_lots_lots" to_schema="dotmotors" to_table="lots" >
+				<fk_column name="lot_id" pk="id" />
+			</fk>
+		</table>
+		<table name="service_vehicles" prior="service_" >
+			<column name="id" type="serial" jt="4" mandatory="y" />
+			<column name="vehicle_id" type="serial" jt="4" mandatory="y" />
+			<column name="nf" type="varchar" length="50" jt="12" mandatory="y" />
+			<column name="value" type="double precision" jt="3" mandatory="y" />
+			<column name="description" type="varchar" length="255" jt="12" mandatory="y" >
+				<comment><![CDATA[descrição do serviço executado]]></comment>
+			</column>
+			<column name="created" type="timestamp" jt="93" mandatory="y" >
+				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
+			</column>
+			<column name="updated" type="timestamp" jt="93" />
+			<column name="deleted" type="timestamp" jt="93" >
+				<defo><![CDATA['197-01-01 00:00:00']]></defo>
+			</column>
+			<index name="pk_service_vehicles" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_service_vehicles_vehicles" to_schema="dotmotors" to_table="vehicles" >
+				<fk_column name="vehicle_id" pk="id" />
+			</fk>
+		</table>
+		<table name="tbl" />
+		<table name="vehicles" prior="tbl" >
+			<column name="id" type="serial" jt="4" mandatory="y" />
+			<column name="owner_id" type="integer" jt="4" mandatory="y" />
+			<column name="brand" type="varchar" length="20" jt="12" mandatory="y" />
+			<column name="renavan" type="varchar" length="30" jt="12" mandatory="y" />
+			<column name="color" type="varchar" length="30" jt="12" mandatory="y" />
+			<column name="model" type="varchar" length="30" jt="12" mandatory="y" />
+			<column name="sign" type="varchar" length="10" jt="12" mandatory="y" />
+			<column name="year" type="integer" jt="4" mandatory="y" />
+			<column name="kilometer" prior="km" type="integer" jt="4" mandatory="y" />
+			<column name="fine" type="real" jt="7" mandatory="y" />
+			<column name="qtd" type="integer" jt="4" mandatory="y" />
+			<column name="created" type="timestamp" jt="93" mandatory="y" >
+				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
+			</column>
+			<column name="updated" type="timestamp" jt="93" />
+			<column name="deleted" type="timestamp" jt="93" mandatory="y" >
+				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+			</column>
+			<index name="pk_vehicles" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_vehicles_owners" to_schema="dotmotors" to_table="entities" >
+				<fk_column name="owner_id" pk="id" />
+			</fk>
+		</table>
+	</schema>
+	<connector name="MyDb" database="MySql" host="localhost" port="3306" user="root" useSystemProxy="false" />
+	<layout name="Default Layout" id="Layout-1395" show_relation="columns" >
+		<entity schema="dotmotors" name="contracts" color="C1D8EE" x="48" y="48" />
+		<entity schema="dotmotors" name="entities" color="C1D8EE" x="576" y="48" />
+		<entity schema="dotmotors" name="entity_types" color="C1D8EE" x="896" y="48" />
+		<entity schema="dotmotors" name="item_lots" color="C1D8EE" x="176" y="720" />
+		<entity schema="dotmotors" name="lots" color="C1D8EE" x="592" y="704" />
+		<entity schema="dotmotors" name="promissory" color="C1D8EE" x="272" y="160" />
+		<entity schema="dotmotors" name="service_lots" color="C1D8EE" x="800" y="704" />
+		<entity schema="dotmotors" name="service_vehicles" color="C1D8EE" x="336" y="432" />
+		<entity schema="dotmotors" name="vehicles" color="C1D8EE" x="48" y="384" />
+	</layout>
+</project>
