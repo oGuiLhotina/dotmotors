@@ -150,6 +150,7 @@ parcela + juros]]></comment>
 			</index>
 		</table>
 		<table name="promissory" prior="tbl_0" >
+			<comment><![CDATA[tabela de promissórias]]></comment>
 			<column name="contract_id" type="integer" jt="4" mandatory="y" />
 			<column name="number" prior="id" type="integer" jt="4" mandatory="y" />
 			<column name="due_date" type="integer" length="100" jt="4" mandatory="y" >
