@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="dotmotors" id="Project-c81" database="PostgreSQL" >
-	<schema name="dotmotors" >
+	<schema name="public" >
+		<comment><![CDATA[standard public schema]]></comment>
 		<table name="contracts" prior="tbl" >
 			<column name="id" type="serial" jt="4" mandatory="y" />
 			<column name="vehicle_id" type="integer" jt="4" mandatory="y" />
@@ -17,7 +18,7 @@ parcela + juros]]></comment>
 			</column>
 			<column name="updated" type="timestamp" jt="93" />
 			<column name="deleted" type="timestamp" jt="93" >
-				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+				<defo><![CDATA['1970-01-01 00:00:00'::timestamp without time zone]]></defo>
 			</column>
 			<column name="signal" type="integer" jt="4" mandatory="y" >
 				<defo><![CDATA[60]]></defo>
@@ -30,24 +31,23 @@ parcela + juros]]></comment>
 				<comment><![CDATA[etapas do funil de vendas
 1 - prospecção
 2 - aceite verbal
-3 - contrato assinado]]></comment>
+3 - contrato assinado
+4 - Teste]]></comment>
 			</column>
 			<index name="pk_contracts" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
 			<constraint name="contract_types" >
-				<string><![CDATA[1,2,3]]></string>
-				<comment><![CDATA[1 - prospecção 
-2 - aceite verbal
-3 - contrato assinado]]></comment>
+				<string><![CDATA[(type = ANY (ARRAY[1, 2, 3, 4]))]]></string>
+				<comment><![CDATA[1 - prospecção \n2 - aceite verbal\n3 - contrato assinado\n4-teste]]></comment>
 			</constraint>
-			<fk name="fk_contracts_vehicles" to_schema="dotmotors" to_table="vehicles" >
+			<fk name="fk_contracts_vehicles" to_schema="public" to_table="vehicles" >
 				<fk_column name="vehicle_id" pk="id" />
 			</fk>
-			<fk name="fk_contracts_entities_seller" to_schema="dotmotors" to_table="entities" >
+			<fk name="fk_contracts_entities_seller" to_schema="public" to_table="entities" >
 				<fk_column name="seller_id" pk="id" />
 			</fk>
-			<fk name="fk_contracts_entities_customer" to_schema="dotmotors" to_table="entities" >
+			<fk name="fk_contracts_entities_customer" to_schema="public" to_table="entities" >
 				<fk_column name="customer_id" pk="id" />
 			</fk>
 		</table>
@@ -65,12 +65,12 @@ parcela + juros]]></comment>
 			</column>
 			<column name="updated" type="timestamp" jt="93" />
 			<column name="deleted" type="timestamp" jt="93" >
-				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+				<defo><![CDATA['1970-01-01 00:00:00'::timestamp without time zone]]></defo>
 			</column>
 			<index name="pk_customers" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
-			<fk name="fk_entities_entity_types" to_schema="dotmotors" to_table="entity_types" >
+			<fk name="fk_entities_entity_types" to_schema="public" to_table="entity_types" >
 				<fk_column name="entity_type_id" pk="id" />
 			</fk>
 		</table>
@@ -82,7 +82,7 @@ parcela + juros]]></comment>
 			</column>
 			<column name="updated" type="timestamp" jt="93" />
 			<column name="deleted" type="timestamp" jt="93" mandatory="y" >
-				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+				<defo><![CDATA['1970-01-01 00:00:00'::timestamp without time zone]]></defo>
 			</column>
 			<index name="pk_entity_types" unique="PRIMARY_KEY" >
 				<column name="id" />
@@ -104,15 +104,15 @@ parcela + juros]]></comment>
 			</column>
 			<column name="updated" type="timestamp" jt="93" />
 			<column name="deleted" type="timestamp" jt="93" >
-				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+				<defo><![CDATA['1970-01-01 00:00:00'::timestamp without time zone]]></defo>
 			</column>
 			<index name="pk_item_lots" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
-			<fk name="fk_item_lots_vehicles" to_schema="dotmotors" to_table="vehicles" >
+			<fk name="fk_item_lots_vehicles" to_schema="public" to_table="vehicles" >
 				<fk_column name="vehicle_id" pk="id" />
 			</fk>
-			<fk name="fk_item_lots_lots" to_schema="dotmotors" to_table="lots" >
+			<fk name="fk_item_lots_lots" to_schema="public" to_table="lots" >
 				<fk_column name="lot_id" pk="id" />
 			</fk>
 		</table>
@@ -125,12 +125,12 @@ parcela + juros]]></comment>
 			</column>
 			<column name="updated" type="timestamp" jt="93" />
 			<column name="deleted" type="timestamp" jt="93" >
-				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+				<defo><![CDATA['1970-01-01 00:00:00'::timestamp without time zone]]></defo>
 			</column>
 			<index name="pk_lots" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
-			<fk name="fk_lots_entities" to_schema="dotmotors" to_table="entities" >
+			<fk name="fk_lots_entities" to_schema="public" to_table="entities" >
 				<fk_column name="agency_id" pk="id" />
 			</fk>
 		</table>
@@ -138,12 +138,12 @@ parcela + juros]]></comment>
 			<column name="id" type="serial" jt="4" mandatory="y" />
 			<column name="cpf" type="varchar" length="20" jt="12" mandatory="y" />
 			<column name="cpnj" type="varchar" length="20" jt="12" mandatory="y" />
-			<column name="created" type="timestamp" length="100" jt="93" mandatory="y" >
+			<column name="created" type="timestamp" decimal="6" jt="93" mandatory="y" >
 				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
 			</column>
-			<column name="updated" type="timestamp" length="50" jt="93" />
+			<column name="updated" type="timestamp" decimal="6" jt="93" />
 			<column name="deleted" type="timestamp" jt="93" >
-				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+				<defo><![CDATA['1970-01-01 00:00:00'::timestamp without time zone]]></defo>
 			</column>
 			<index name="pk_owners" unique="PRIMARY_KEY" >
 				<column name="id" />
@@ -162,12 +162,12 @@ parcela + juros]]></comment>
 			<column name="pro_rata" type="double precision" jt="3" mandatory="y" >
 				<comment><![CDATA[valor cobrado por dia de atraso]]></comment>
 			</column>
-			<column name="created" type="timestamp" length="100" jt="93" >
+			<column name="created" type="timestamp" decimal="6" jt="93" >
 				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
 			</column>
 			<column name="updated" type="timestamp" jt="93" />
 			<column name="deleted" type="timestamp" jt="93" >
-				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+				<defo><![CDATA['1970-01-01 00:00:00'::timestamp without time zone]]></defo>
 			</column>
 			<index name="pk_promissory" unique="PRIMARY_KEY" >
 				<column name="number" />
@@ -176,7 +176,7 @@ parcela + juros]]></comment>
 				<column name="contract_id" />
 				<column name="number" />
 			</index>
-			<fk name="fk_promissory_contracts" to_schema="dotmotors" to_table="contracts" >
+			<fk name="fk_promissory_contracts" to_schema="public" to_table="contracts" >
 				<fk_column name="contract_id" pk="id" />
 			</fk>
 		</table>
@@ -188,17 +188,17 @@ parcela + juros]]></comment>
 			<column name="description" type="varchar" length="255" jt="12" mandatory="y" >
 				<comment><![CDATA[descrição da despesa referente ao lote]]></comment>
 			</column>
-			<column name="created" type="timestamp" length="100" jt="93" >
+			<column name="created" type="timestamp" decimal="6" jt="93" >
 				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
 			</column>
 			<column name="updated" type="timestamp" jt="93" />
 			<column name="deleted" type="timestamp" jt="93" mandatory="y" >
-				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+				<defo><![CDATA['1970-01-01 00:00:00'::timestamp without time zone]]></defo>
 			</column>
 			<index name="pk_service_lots" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
-			<fk name="fk_service_lots_lots" to_schema="dotmotors" to_table="lots" >
+			<fk name="fk_service_lots_lots" to_schema="public" to_table="lots" >
 				<fk_column name="lot_id" pk="id" />
 			</fk>
 		</table>
@@ -215,16 +215,15 @@ parcela + juros]]></comment>
 			</column>
 			<column name="updated" type="timestamp" jt="93" />
 			<column name="deleted" type="timestamp" jt="93" >
-				<defo><![CDATA['197-01-01 00:00:00']]></defo>
+				<defo><![CDATA['0197-01-01 00:00:00'::timestamp without time zone]]></defo>
 			</column>
 			<index name="pk_service_vehicles" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
-			<fk name="fk_service_vehicles_vehicles" to_schema="dotmotors" to_table="vehicles" >
+			<fk name="fk_service_vehicles_vehicles" to_schema="public" to_table="vehicles" >
 				<fk_column name="vehicle_id" pk="id" />
 			</fk>
 		</table>
-		<table name="tbl" />
 		<table name="vehicles" prior="tbl" >
 			<column name="id" type="serial" jt="4" mandatory="y" />
 			<column name="owner_id" type="integer" jt="4" mandatory="y" />
@@ -242,26 +241,27 @@ parcela + juros]]></comment>
 			</column>
 			<column name="updated" type="timestamp" jt="93" />
 			<column name="deleted" type="timestamp" jt="93" mandatory="y" >
-				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+				<defo><![CDATA['1970-01-01 00:00:00'::timestamp without time zone]]></defo>
 			</column>
 			<index name="pk_vehicles" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
-			<fk name="fk_vehicles_owners" to_schema="dotmotors" to_table="entities" >
+			<fk name="fk_vehicles_owners" to_schema="public" to_table="entities" >
 				<fk_column name="owner_id" pk="id" />
 			</fk>
 		</table>
 	</schema>
 	<connector name="MyDb" database="MySql" host="localhost" port="3306" user="root" useSystemProxy="false" />
+	<connector name="dotMotors" database="PostgreSQL" driver_class="org.postgresql.Driver" driver_jar="postgresql-42.5.0.jar" driver_desc="Standard" host="dotmotors.cvhw9xhsrnj8.us-east-1.rds.amazonaws.com" port="5432" instance="dotmotors" user="postgres" passwd="MjBfQmF0YXRpbmhhXzI0ISE=" useSystemProxy="false" />
 	<layout name="Default Layout" id="Layout-1395" show_relation="columns" >
-		<entity schema="dotmotors" name="contracts" color="C1D8EE" x="48" y="48" />
-		<entity schema="dotmotors" name="entities" color="C1D8EE" x="576" y="48" />
-		<entity schema="dotmotors" name="entity_types" color="C1D8EE" x="896" y="48" />
-		<entity schema="dotmotors" name="item_lots" color="C1D8EE" x="176" y="720" />
-		<entity schema="dotmotors" name="lots" color="C1D8EE" x="592" y="704" />
-		<entity schema="dotmotors" name="promissory" color="C1D8EE" x="272" y="160" />
-		<entity schema="dotmotors" name="service_lots" color="C1D8EE" x="800" y="704" />
-		<entity schema="dotmotors" name="service_vehicles" color="C1D8EE" x="336" y="432" />
-		<entity schema="dotmotors" name="vehicles" color="C1D8EE" x="48" y="384" />
+		<entity schema="public" name="contracts" color="C1D8EE" x="48" y="48" />
+		<entity schema="public" name="entities" color="C1D8EE" x="576" y="48" />
+		<entity schema="public" name="entity_types" color="C1D8EE" x="896" y="48" />
+		<entity schema="public" name="item_lots" color="C1D8EE" x="176" y="720" />
+		<entity schema="public" name="lots" color="C1D8EE" x="592" y="704" />
+		<entity schema="public" name="promissory" color="C1D8EE" x="272" y="160" />
+		<entity schema="public" name="service_lots" color="C1D8EE" x="800" y="704" />
+		<entity schema="public" name="service_vehicles" color="C1D8EE" x="336" y="432" />
+		<entity schema="public" name="vehicles" color="C1D8EE" x="48" y="384" />
 	</layout>
 </project>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="dotmotors" id="Project-c81" database="PostgreSQL" >
 	<schema name="public" >
+		<comment><![CDATA[standard public schema]]></comment>
 		<table name="contracts" prior="tbl" >
 			<column name="id" type="serial" jt="4" mandatory="y" />
 			<column name="vehicle_id" type="integer" jt="4" mandatory="y" />
@@ -17,7 +18,7 @@ parcela + juros]]></comment>
 			</column>
 			<column name="updated" type="timestamp" jt="93" />
 			<column name="deleted" type="timestamp" jt="93" >
-				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+				<defo><![CDATA['1970-01-01 00:00:00'::timestamp without time zone]]></defo>
 			</column>
 			<column name="signal" type="integer" jt="4" mandatory="y" >
 				<defo><![CDATA[60]]></defo>
@@ -30,17 +31,15 @@ parcela + juros]]></comment>
 				<comment><![CDATA[etapas do funil de vendas
 1 - prospecção
 2 - aceite verbal
-3 - contrato assinado]]></comment>
+3 - contrato assinado
+4 - Teste]]></comment>
 			</column>
 			<index name="pk_contracts" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
 			<constraint name="contract_types" >
-				<string><![CDATA[type in (1,2,3,4)]]></string>
-				<comment><![CDATA[1 - prospecção 
-2 - aceite verbal
-3 - contrato assinado
-4-teste]]></comment>
+				<string><![CDATA[(type = ANY (ARRAY[1, 2, 3, 4]))]]></string>
+				<comment><![CDATA[1 - prospecção \n2 - aceite verbal\n3 - contrato assinado\n4-teste]]></comment>
 			</constraint>
 			<fk name="fk_contracts_vehicles" to_schema="public" to_table="vehicles" >
 				<fk_column name="vehicle_id" pk="id" />
@@ -66,7 +65,7 @@ parcela + juros]]></comment>
 			</column>
 			<column name="updated" type="timestamp" jt="93" />
 			<column name="deleted" type="timestamp" jt="93" >
-				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+				<defo><![CDATA['1970-01-01 00:00:00'::timestamp without time zone]]></defo>
 			</column>
 			<index name="pk_customers" unique="PRIMARY_KEY" >
 				<column name="id" />
@@ -83,7 +82,7 @@ parcela + juros]]></comment>
 			</column>
 			<column name="updated" type="timestamp" jt="93" />
 			<column name="deleted" type="timestamp" jt="93" mandatory="y" >
-				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+				<defo><![CDATA['1970-01-01 00:00:00'::timestamp without time zone]]></defo>
 			</column>
 			<index name="pk_entity_types" unique="PRIMARY_KEY" >
 				<column name="id" />
@@ -105,7 +104,7 @@ parcela + juros]]></comment>
 			</column>
 			<column name="updated" type="timestamp" jt="93" />
 			<column name="deleted" type="timestamp" jt="93" >
-				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+				<defo><![CDATA['1970-01-01 00:00:00'::timestamp without time zone]]></defo>
 			</column>
 			<index name="pk_item_lots" unique="PRIMARY_KEY" >
 				<column name="id" />
@@ -126,7 +125,7 @@ parcela + juros]]></comment>
 			</column>
 			<column name="updated" type="timestamp" jt="93" />
 			<column name="deleted" type="timestamp" jt="93" >
-				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+				<defo><![CDATA['1970-01-01 00:00:00'::timestamp without time zone]]></defo>
 			</column>
 			<index name="pk_lots" unique="PRIMARY_KEY" >
 				<column name="id" />
@@ -139,12 +138,12 @@ parcela + juros]]></comment>
 			<column name="id" type="serial" jt="4" mandatory="y" />
 			<column name="cpf" type="varchar" length="20" jt="12" mandatory="y" />
 			<column name="cpnj" type="varchar" length="20" jt="12" mandatory="y" />
-			<column name="created" type="timestamp" length="100" jt="93" mandatory="y" >
+			<column name="created" type="timestamp" decimal="6" jt="93" mandatory="y" >
 				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
 			</column>
-			<column name="updated" type="timestamp" length="50" jt="93" />
+			<column name="updated" type="timestamp" decimal="6" jt="93" />
 			<column name="deleted" type="timestamp" jt="93" >
-				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+				<defo><![CDATA['1970-01-01 00:00:00'::timestamp without time zone]]></defo>
 			</column>
 			<index name="pk_owners" unique="PRIMARY_KEY" >
 				<column name="id" />
@@ -163,12 +162,12 @@ parcela + juros]]></comment>
 			<column name="pro_rata" type="double precision" jt="3" mandatory="y" >
 				<comment><![CDATA[valor cobrado por dia de atraso]]></comment>
 			</column>
-			<column name="created" type="timestamp" length="100" jt="93" >
+			<column name="created" type="timestamp" decimal="6" jt="93" >
 				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
 			</column>
 			<column name="updated" type="timestamp" jt="93" />
 			<column name="deleted" type="timestamp" jt="93" >
-				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+				<defo><![CDATA['1970-01-01 00:00:00'::timestamp without time zone]]></defo>
 			</column>
 			<index name="pk_promissory" unique="PRIMARY_KEY" >
 				<column name="number" />
@@ -189,12 +188,12 @@ parcela + juros]]></comment>
 			<column name="description" type="varchar" length="255" jt="12" mandatory="y" >
 				<comment><![CDATA[descrição da despesa referente ao lote]]></comment>
 			</column>
-			<column name="created" type="timestamp" length="100" jt="93" >
+			<column name="created" type="timestamp" decimal="6" jt="93" >
 				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
 			</column>
 			<column name="updated" type="timestamp" jt="93" />
 			<column name="deleted" type="timestamp" jt="93" mandatory="y" >
-				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+				<defo><![CDATA['1970-01-01 00:00:00'::timestamp without time zone]]></defo>
 			</column>
 			<index name="pk_service_lots" unique="PRIMARY_KEY" >
 				<column name="id" />
@@ -216,7 +215,7 @@ parcela + juros]]></comment>
 			</column>
 			<column name="updated" type="timestamp" jt="93" />
 			<column name="deleted" type="timestamp" jt="93" >
-				<defo><![CDATA['197-01-01 00:00:00']]></defo>
+				<defo><![CDATA['0197-01-01 00:00:00'::timestamp without time zone]]></defo>
 			</column>
 			<index name="pk_service_vehicles" unique="PRIMARY_KEY" >
 				<column name="id" />
@@ -242,7 +241,7 @@ parcela + juros]]></comment>
 			</column>
 			<column name="updated" type="timestamp" jt="93" />
 			<column name="deleted" type="timestamp" jt="93" mandatory="y" >
-				<defo><![CDATA['1970-01-01 00:00:00']]></defo>
+				<defo><![CDATA['1970-01-01 00:00:00'::timestamp without time zone]]></defo>
 			</column>
 			<index name="pk_vehicles" unique="PRIMARY_KEY" >
 				<column name="id" />
