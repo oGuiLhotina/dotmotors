@@ -38,8 +38,10 @@ parcela + juros]]></comment>
 				<column name="id" />
 			</index>
 			<constraint name="contract_types" >
-				<string><![CDATA[(type = ANY (ARRAY[1, 2, 3, 4]))]]></string>
-				<comment><![CDATA[1 - prospecção \n2 - aceite verbal\n3 - contrato assinado\n4-teste]]></comment>
+				<string><![CDATA[(type = ANY (ARRAY[1, 2, 3]))]]></string>
+				<comment><![CDATA[1 - prospecção
+2 - aceite verbal 
+3 - contrato assinado]]></comment>
 			</constraint>
 			<fk name="fk_contracts_vehicles" to_schema="public" to_table="vehicles" >
 				<fk_column name="vehicle_id" pk="id" />
